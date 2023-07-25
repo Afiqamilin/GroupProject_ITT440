@@ -1,0 +1,6 @@
+FROM mysql:latest
+ENV MYSQL_ROOT_PASSWORD my-secret-pw
+ENV MYSQL_DATABASE sir_db
+ENV MYSQL_USER sir
+ENV MYSQL_PASSWORD sir-secret-pw
+EXPOSE 3306

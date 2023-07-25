@@ -1,0 +1,61 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  server-python:
+    build:
+      context: .
+      dockerfile: Dockerfile.server.py
+    depends_on:
+      - db
+    ports:
+      - "15001:15001"
+    environment:
+      DB_host: db
+      DB_NAME: mydatabase
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_PORT: 5432
+    networks:
+      - my-network
+
+  server-c:
+    build:
+      context: .
+      dockerfile: Dockerfile.server.c
+    depends_on:
+      - db
+    ports:
+      - "16001:16001"
+    networks:
+      - my-network
+
+  client-python:
+    build:
+      context: .
+      dockerfile: Dockerfile.client.py
+    networks:
+      - my-network
+
+  client-c:
+    build:
+      context: .
+      dockerfile: Dockerfile.client.c
+    networks:
+      - my-network
+
+networks:
+   my-network:
+
+volumes:
+   db_data:
